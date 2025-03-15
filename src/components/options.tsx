@@ -37,7 +37,7 @@ const ANSWER_DESCRIPTION = {
   front: "答えは問題の下に印刷されます。",
   back: "答えは別紙に印刷されます。両面印刷がおすすめです。",
   code: "答えはQRコードとして印刷されます。",
-};
+} as const;
 
 const TitleInput = () => {
   const [title, setTitle] = useAtom(titleAtom);
@@ -76,7 +76,11 @@ const AnswerTypeSelector = () => {
         </Toggle>
       </ToggleGroup>
       <Description>
-        {[...answerType].map((key) => ANSWER_DESCRIPTION[key])}
+        {[...answerType].map((key) => {
+          const description =
+            ANSWER_DESCRIPTION[key as keyof typeof ANSWER_DESCRIPTION];
+          return description ?? "";
+        })}
       </Description>
     </div>
   );

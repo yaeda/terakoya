@@ -32,7 +32,7 @@ type AnswerProps = {
 
 export const Answer: FC<AnswerProps> = ({ backSide }) => {
   const [answerType] = useAtom(answerTypeAtom);
-  const type = [...answerType].pop();
+  const type = [...answerType].pop() as "back" | "default" | undefined;
 
   const [dataSourceUrl] = useAtom(dataSourceUrlAtom);
   const { data } = useQuery({
