@@ -8,9 +8,13 @@
 @plugin 'tailwindcss-animate';
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-  "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: "Geist Mono", 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace';
+  --font-sans:
+    "Inter", "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", Meiryo, ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    "Geist Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco",
+    "Consolas", '"Liberation Mono"', '"Courier New"', "monospace";
 
   --color-border: var(--border);
   --color-input: var(--input);
@@ -186,7 +190,8 @@
   }
 
   body {
-    background-color: var(--bg);
+    height: 100%;
+    background-color: var(--color-slate-100);
     color: var(--fg);
   }
 
@@ -202,4 +207,15 @@
     background: var(--border);
     border-radius: 4px;
   }
+}
+
+#root {
+  height: 100%;
+}
+
+@page {
+  /* A4 Portrait */
+  width: 210mm;
+  height: 297mm;
+  margin: 0mm;
 }
