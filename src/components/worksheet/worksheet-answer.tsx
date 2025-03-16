@@ -1,7 +1,6 @@
-import { answerTypeAtom, dataSourceUrlAtom } from "@/atoms/options";
-import { fetchSpreadsheet } from "@/atoms/q-a-data";
+import { answerTypeAtom } from "@/atoms/options";
 import { NUMBER_SIGN_LIST } from "@/libs/constants";
-import { useQuery } from "@tanstack/react-query";
+import { useQuerySelectedAnswers } from "@/libs/q-a-data-queries";
 import { useAtom } from "jotai";
 import { QRCodeSVG } from "qrcode.react";
 import { FC } from "react";
@@ -11,7 +10,7 @@ import { Popover } from "../ui";
 const answerStyle = tv({
   slots: {
     area: "mt-4 border-t-2 border-dotted border-black px-4 pt-4 pb-0",
-    list: "flex flex-row flex-wrap",
+    list: "flex flex-row flex-wrap gap-1",
   },
   variants: {
     type: {
@@ -34,21 +33,7 @@ export const Answer: FC<AnswerProps> = ({ backSide }) => {
   const [answerType] = useAtom(answerTypeAtom);
   const type = [...answerType].pop() as "back" | "default" | undefined;
 
-  const [dataSourceUrl] = useAtom(dataSourceUrlAtom);
-  const { data } = useQuery({
-    queryKey: ["q-a-data", dataSourceUrl],
-    queryFn: async () => {
-      return await fetchSpreadsheet(dataSourceUrl);
-    },
-  });
-
-  if (!data) {
-    return null;
-  }
-
-  const answers = data?.slice(0, 10).map((item) => {
-    return item.answers[0];
-  });
+  const answers = useQuerySelectedAnswers();
 
   if (answerType.has("none") || answerType.has("code") || type === undefined) {
     return null;
@@ -66,7 +51,7 @@ export const Answer: FC<AnswerProps> = ({ backSide }) => {
           return (
             <li key={`answer-${index}`}>
               {NUMBER_SIGN_LIST[index]}
-              {answer}
+              {answer.join("/")}
             </li>
           );
         })}
@@ -77,24 +62,16 @@ export const Answer: FC<AnswerProps> = ({ backSide }) => {
 
 export const AnswerQR = () => {
   const [answerType] = useAtom(answerTypeAtom);
-
-  const [dataSourceUrl] = useAtom(dataSourceUrlAtom);
-  const { data } = useQuery({
-    queryKey: ["q-a-data", dataSourceUrl],
-    queryFn: async () => {
-      return await fetchSpreadsheet(dataSourceUrl);
-    },
-  });
-
+  const answers = useQuerySelectedAnswers();
   if (!answerType.has("code")) {
     return null;
   }
 
-  const answers = data?.slice(0, 10).map((item, index) => {
-    return `${NUMBER_SIGN_LIST[index]}${item.answers[0]}`;
+  const answerList = answers.map((answer, index) => {
+    return `${NUMBER_SIGN_LIST[index]}${answer.join("/")}`;
   });
 
-  const answerText = answers ? answers.join("\n") : "no data";
+  const answerText = answerList ? answerList.join("\n") : "no data";
 
   return (
     <Popover>
@@ -105,7 +82,7 @@ export const AnswerQR = () => {
         <Popover.Header>
           <Popover.Description>
             <ol>
-              {answers?.map((answer, index) => {
+              {answerList?.map((answer, index) => {
                 return <li key={`answer-${index}`}>{answer}</li>;
               })}
             </ol>

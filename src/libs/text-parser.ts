@@ -1,4 +1,4 @@
-type ParsedToken = {
+export type Token = {
   text: string;
   ruby?: string;
   isBlank: boolean;
@@ -18,10 +18,10 @@ type ParsedToken = {
  * @param input - The input string to be parsed.
  * @returns An array of ParsedToken objects representing the parsed tokens.
  */
-export const parse = (input: string): ParsedToken[] => {
+export const parse = (input: string): Token[] => {
   const regex =
     /\[\[(?<blank1>.*?):+(?<hint1>.*?)\]\]|\[\[(?<blank2>.*?)\]\]|\{\{(?<blank3>.*?):+(?<hint3>.*?)\}\}|\{\{(?<blank4>.*?)\}\}|\(\((?<rubytarget>[一-龥々]+):+(?<rubytext>.*?)\)\)/g;
-  const result: ParsedToken[] = [];
+  const result: Token[] = [];
 
   const matches = input.matchAll(regex);
 

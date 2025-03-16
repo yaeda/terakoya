@@ -7,19 +7,19 @@ import { Worksheet } from "./components/worksheet/worksheet";
 function App() {
   return (
     <main className="h-full">
-      <div className="grid h-full grid-cols-3 print:hidden">
-        <div className="px-auto col-span-3 flex flex-col items-center justify-center py-4 xl:col-span-2">
-          <Heading level={1} tracking="widest" className="block py-4 xl:hidden">
-            TERAKOYA
-          </Heading>
-          <Preview />
-        </div>
-        <div className="hidden p-4 xl:col-span-1 xl:block">
+      <div className="grid h-full grid-cols-3 grid-rows-1 overflow-hidden print:hidden">
+        <div className="col-span-3 row-span-1 grid size-full grid-cols-1 grid-rows-12 overflow-hidden md:col-span-2">
           <Heading
             level={1}
             tracking="widest"
-            className="hidden py-4 text-center xl:block"
+            className="row-span-1 flex items-center justify-center py-4 md:hidden"
           >
+            TERAKOYA
+          </Heading>
+          <Preview className="row-span-11 -my-4 md:row-span-12 md:my-0" />
+        </div>
+        <div className="hidden p-4 md:col-span-1 md:block">
+          <Heading level={1} tracking="widest" className="py-4 text-center">
             TERAKOYA
           </Heading>
           <Options intent="cards" />
@@ -33,7 +33,7 @@ function App() {
             印刷する
           </Button>
         </div>
-        <div className="xl:hidden">
+        <div className="md:hidden">
           <Drawer withNotch={false}>
             <Drawer.Trigger
               className={buttonStyles({
@@ -57,6 +57,7 @@ function App() {
                     print();
                   }}
                   intent="primary"
+                  className="w-full"
                 >
                   印刷する
                 </Button>

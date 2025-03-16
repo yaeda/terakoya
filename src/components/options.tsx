@@ -119,14 +119,13 @@ const DataOptions = () => {
         onSubmit={(e) => {
           e.preventDefault();
           setDataSourceUrl(dataSourceUrlLocal);
-          queryClient.invalidateQueries({
-            queryKey: ["q-a-data", dataSourceUrlLocal],
-          });
+          // invalidate all queries
+          queryClient.invalidateQueries();
         }}
       >
         <TextField
           value={dataSourceUrlLocal}
-          label="問題データURL"
+          label="スプレッドシートのURL"
           suffix={
             <Button type="submit" aria-label="New user" intent="outline">
               読み込む
@@ -194,8 +193,9 @@ const OtherOptions = () => {
 };
 
 const OPTIONS = [
-  { title: "出題設定", component: DataOptions },
-  { title: "その他の設定", component: OtherOptions },
+  { id: "data-options", title: "問題データ", component: DataOptions },
+  // { id: "data-selection-options", title: "出題設定", component: DataOptions },
+  { id: "other-options", title: "その他の設定", component: OtherOptions },
 ];
 
 type OptionsProps = {
@@ -208,7 +208,7 @@ export const Options: FC<OptionsProps> = ({ intent } = { intent: "cards" }) => {
       <div className="flex flex-col gap-4">
         {OPTIONS.map((option) => {
           return (
-            <Card>
+            <Card key={`card-${option.id}`}>
               <Card.Header>
                 <Card.Title>{option.title}</Card.Title>
               </Card.Header>
@@ -228,12 +228,16 @@ export const Options: FC<OptionsProps> = ({ intent } = { intent: "cards" }) => {
         <Tabs aria-label="options">
           <Tabs.List>
             {OPTIONS.map((option) => {
-              return <Tabs.Tab id={option.title}>{option.title}</Tabs.Tab>;
+              return (
+                <Tabs.Tab key={`tab-${option.id}`} id={option.id}>
+                  {option.title}
+                </Tabs.Tab>
+              );
             })}
           </Tabs.List>
           {OPTIONS.map((option) => {
             return (
-              <Tabs.Panel id={option.title}>
+              <Tabs.Panel key={`panel-${option.id}`} id={option.id}>
                 <option.component />
               </Tabs.Panel>
             );

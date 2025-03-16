@@ -1,13 +1,8 @@
-import {
-  answerTypeAtom,
-  dataSourceUrlAtom,
-  readWriteAtom,
-} from "@/atoms/options";
-import { fetchSpreadsheet } from "@/atoms/q-a-data";
+import { answerTypeAtom, readWriteAtom } from "@/atoms/options";
 import { NUMBER_SIGN_LIST } from "@/libs/constants";
 import { hira2kata } from "@/libs/japanese";
-import { parse } from "@/libs/text-parser";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryQAData } from "@/libs/q-a-data-queries";
+import { Token } from "@/libs/text-parser";
 import clsx from "clsx";
 import { useAtom } from "jotai";
 import { CSSProperties, FC } from "react";
@@ -21,10 +16,6 @@ const ORDER_ALIGNMENT = [
   10,  9,  8,  7,  6,  5,  4,  3,  2,  1,
   20, 19, 18, 17, 16, 15, 14, 13, 12, 11
 ]
-
-// https://developer.mozilla.org/ja/docs/Learn_web_development/Core/Styling_basics/Values_and_units
-// 1mm = 1/10 cm = 1/10 * 96px/2.54 = 96/ 25.4 px
-// 210mm = 793.700...px
 
 const BackSide = () => {
   const [answerType] = useAtom(answerTypeAtom);
@@ -65,24 +56,30 @@ const BlankText: FC<BlankTextProps> = ({ text, hint }) => {
 
 type TTextProps = {
   className: ClassNameValue;
-  text: string;
+  text: Token[];
 };
 
 const TText: FC<TTextProps> = ({ className, text }) => {
-  const tokens = parse(text);
+  const tokens = text;
   return (
     <span className={clsx(className)}>
-      {tokens.map((token) => {
+      {tokens.map((token, index) => {
         if (token.ruby) {
           return (
-            <ruby>
+            <ruby key={`${token.text}`}>
               {token.text} <rp>(</rp>
               <rt>{token.ruby}</rt>
               <rp>)</rp>
             </ruby>
           );
         } else if (token.isBlank) {
-          return <BlankText text={token.text} hint={token.hint} />;
+          return (
+            <BlankText
+              key={`${token.text}`}
+              text={token.text}
+              hint={token.hint}
+            />
+          );
         } else {
           return token.text;
         }
@@ -92,17 +89,13 @@ const TText: FC<TTextProps> = ({ className, text }) => {
 };
 
 export const Worksheet = () => {
-  const [dataSourceUrl] = useAtom(dataSourceUrlAtom);
-  const { data, isLoading } = useQuery({
-    queryKey: ["q-a-data", dataSourceUrl],
-    queryFn: async () => {
-      return await fetchSpreadsheet(dataSourceUrl);
-    },
-  });
+  console.log("[render] Worksheet");
 
-  if (isLoading || !data) {
-    return null;
-  }
+  const { data } = useQueryQAData();
+
+  // if (isLoading || !data) {
+  //   return null;
+  // }
 
   return (
     <>
@@ -112,7 +105,7 @@ export const Worksheet = () => {
           {/* Q&A */}
           <div className="col-span-11 grid h-full gap-4 overflow-hidden">
             <ol className="row-span-1 grid grid-cols-10 gap-y-4 overflow-hidden border-black">
-              {data.slice(0, 20).map((item, index) => (
+              {data?.slice(0, 20).map((item, index) => (
                 <li
                   key={index}
                   className="order-[var(--order)] col-span-1 grid grid-cols-3 overflow-hidden border-x-2 border-l-2 border-black [writing-mode:vertical-rl] nth-[10n+1]:border-r-2"
