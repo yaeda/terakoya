@@ -63,7 +63,7 @@ const TText: FC<TTextProps> = ({ className, text }) => {
   const tokens = text;
   return (
     <span className={clsx(className)}>
-      {tokens.map((token, index) => {
+      {tokens.map((token) => {
         if (token.ruby) {
           return (
             <ruby key={`${token.text}`}>
