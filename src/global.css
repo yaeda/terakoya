@@ -4,14 +4,18 @@
 * Then replace var(--font-inter) to Inter
 */
 
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Klee+One&family=Noto+Sans+JP:wght@100..900&display=swap");
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @theme {
   --font-sans:
-    "Inter", "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+    "Noto Sans JP", "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
     "Hiragino Sans", Meiryo, ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-cursive: "Klee One", cursive;
   --font-mono:
     "Geist Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco",
     "Consolas", '"Liberation Mono"', '"Courier New"', "monospace";
@@ -181,6 +185,7 @@
 
   html {
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-optical-sizing: auto;
     font-variation-settings: normal;
     scroll-behavior: smooth;
     height: 100%;
