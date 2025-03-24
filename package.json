@@ -25,6 +25,7 @@
     "react-scan": "^0.2.11",
     "react-stately": "^3.36.1",
     "tailwindcss": "^4.0.9",
+    "tailwindcss-react-aria-components": "^2.0.0",
     "tw-animate-css": "^1.2.2"
   },
   "devDependencies": {

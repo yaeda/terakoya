@@ -9,12 +9,13 @@
 
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin 'tailwindcss-react-aria-components';
 
 @theme {
   --font-sans:
     "Noto Sans JP", "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
-    "Hiragino Sans", Meiryo, ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    "Hiragino Sans", Meiryo, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
   --font-cursive: "Klee One", cursive;
   --font-mono:
     "Geist Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco",
@@ -68,22 +69,22 @@
 @layer base {
   :root {
     --bg: var(--color-white);
-    --fg: var(--color-slate-950);
+    --fg: var(--color-zinc-950);
 
     --primary: var(--color-blue-600);
     --primary-fg: var(--color-white);
 
-    --secondary: var(--color-slate-100);
-    --secondary-fg: var(--color-slate-950);
+    --secondary: var(--color-zinc-100);
+    --secondary-fg: var(--color-zinc-950);
 
     --overlay: var(--color-white);
-    --overlay-fg: var(--color-slate-950);
+    --overlay-fg: var(--color-zinc-950);
 
     --accent: var(--color-blue-600);
     --accent-fg: var(--color-white);
 
-    --muted: var(--color-slate-100);
-    --muted-fg: var(--color-slate-600);
+    --muted: var(--color-zinc-100);
+    --muted-fg: var(--color-zinc-600);
 
     --success: var(--color-emerald-600);
     --success-fg: var(--color-white);
@@ -94,15 +95,15 @@
     --danger: var(--color-red-600);
     --danger-fg: var(--color-red-50);
 
-    --border: var(--color-slate-200);
-    --input: var(--color-slate-300);
+    --border: var(--color-zinc-200);
+    --input: var(--color-zinc-300);
     --ring: var(--color-blue-600);
 
-    --navbar: var(--color-slate-50);
-    --navbar-fg: var(--color-slate-950);
+    --navbar: var(--color-zinc-50);
+    --navbar-fg: var(--color-zinc-950);
 
-    --sidebar: var(--color-slate-50);
-    --sidebar-fg: var(--color-slate-950);
+    --sidebar: var(--color-zinc-50);
+    --sidebar-fg: var(--color-zinc-950);
 
     --chart-1: var(--color-blue-600);
     --chart-2: var(--color-blue-400);
@@ -121,23 +122,23 @@
   }
 
   .dark {
-    --bg: var(--color-slate-950);
-    --fg: var(--color-slate-50);
+    --bg: var(--color-zinc-950);
+    --fg: var(--color-zinc-50);
 
     --primary: var(--color-blue-600);
     --primary-fg: var(--color-white);
 
-    --secondary: oklch(0.249 0.041 260.031);
-    --secondary-fg: var(--color-slate-50);
+    --secondary: oklch(0.244 0.006 286.033);
+    --secondary-fg: var(--color-zinc-50);
 
     --accent: var(--color-blue-600);
     --accent-fg: var(--color-white);
 
-    --muted: var(--color-slate-900);
-    --muted-fg: var(--color-slate-400);
+    --muted: var(--color-zinc-900);
+    --muted-fg: var(--color-zinc-400);
 
-    --overlay: oklch(0.168 0.042 265.755);
-    --overlay-fg: var(--color-slate-50);
+    --overlay: oklch(0.17 0.006 285.885);
+    --overlay-fg: var(--color-zinc-50);
 
     --success: var(--color-emerald-600);
     --success-fg: var(--color-white);
@@ -148,15 +149,15 @@
     --danger: var(--color-red-600);
     --danger-fg: var(--color-red-50);
 
-    --border: oklch(0.272 0.044 257.287);
-    --input: oklch(0.292 0.044 257.287);
+    --border: oklch(0.27 0.013 285.805);
+    --input: oklch(0.29 0.013 285.805);
     --ring: var(--color-blue-600);
 
-    --navbar: oklch(0.168 0.042 265.755);
-    --navbar-fg: var(--color-slate-50);
+    --navbar: oklch(0.17 0.006 285.885);
+    --navbar-fg: var(--color-zinc-50);
 
-    --sidebar: oklch(0.158 0.042 265.755);
-    --sidebar-fg: var(--color-slate-50);
+    --sidebar: oklch(0.16 0.006 285.885);
+    --sidebar-fg: var(--color-zinc-50);
 
     --chart-1: var(--color-blue-700);
     --chart-2: var(--color-blue-500);
@@ -196,7 +197,7 @@
 
   body {
     height: 100%;
-    background-color: var(--color-slate-100);
+    background-color: var(--color-zinc-100);
     color: var(--fg);
     overflow-y: hidden;
   }
