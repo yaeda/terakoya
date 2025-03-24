@@ -75,7 +75,7 @@ const FieldError = ({ className, ref, ...props }: FieldErrorProps) => {
 const fieldGroupStyles = tv({
   base: [
     "group flex h-10 items-center overflow-hidden rounded-lg border border-input shadow-xs transition duration-200 ease-out",
-    "relative focus-within:ring-4 group-data-invalid:focus-within:border-danger group-data-invalid:focus-within:ring-danger/20",
+    "relative focus-within:ring-4 group-invalid:focus-within:border-danger group-invalid:focus-within:ring-danger/20",
     "[&>[role=progressbar]:first-child]:ml-2.5 [&>[role=progressbar]:last-child]:mr-2.5",
     "**:data-[slot=icon]:size-4 **:data-[slot=icon]:shrink-0 **:[button]:shrink-0",
     "[&>button:has([data-slot=icon]):first-child]:left-0 [&>button:has([data-slot=icon]):last-child]:right-0 [&>button:has([data-slot=icon])]:absolute",
@@ -96,10 +96,14 @@ const fieldGroupStyles = tv({
   },
 })
 
-const FieldGroup = ({ className, ...props }: GroupProps) => {
+interface FieldGroupProps extends GroupProps {
+  ref?: React.RefObject<HTMLDivElement>
+}
+const FieldGroup = ({ className, ref, ...props }: FieldGroupProps) => {
   return (
     <Group
       {...props}
+      ref={ref}
       className={composeRenderProps(className, (className, renderProps) =>
         fieldGroupStyles({
           ...renderProps,
@@ -121,7 +125,7 @@ const Input = ({ className, ref, ...props }: InputProps) => {
       {...props}
       className={composeTailwindRenderProps(
         className,
-        "w-full min-w-0 bg-transparent px-2.5 py-2 text-base text-fg placeholder-muted-fg outline-hidden data-focused:outline-hidden sm:text-sm/6 [&::-ms-reveal]:hidden [&::-webkit-search-cancel-button]:hidden",
+        "w-full min-w-0 bg-transparent px-2.5 py-2 text-base text-fg placeholder-muted-fg outline-hidden focus:outline-hidden sm:text-sm/6 [&::-ms-reveal]:hidden [&::-webkit-search-cancel-button]:hidden",
       )}
     />
   )

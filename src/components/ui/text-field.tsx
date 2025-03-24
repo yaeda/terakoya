@@ -1,19 +1,14 @@
 import { useState } from "react"
 
-import type { TextInputDOMProps } from "@react-types/shared"
 import { IconEye, IconEyeClosed } from "justd-icons"
-import {
-  Button as ButtonPrimitive,
-  TextField as TextFieldPrimitive,
-  type TextFieldProps as TextFieldPrimitiveProps,
-} from "react-aria-components"
-
+import { Button as ButtonPrimitive, TextField as TextFieldPrimitive } from "react-aria-components"
+import type { InputProps, TextFieldProps as TextFieldPrimitiveProps } from "react-aria-components"
 import type { FieldProps } from "./field"
 import { Description, FieldError, FieldGroup, Input, Label } from "./field"
 import { Loader } from "./loader"
 import { composeTailwindRenderProps } from "./primitive"
 
-type InputType = Exclude<TextInputDOMProps["type"], "password">
+type InputType = Exclude<InputProps["type"], "password">
 
 interface BaseTextFieldProps extends TextFieldPrimitiveProps, FieldProps {
   prefix?: React.ReactNode

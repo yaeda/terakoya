@@ -103,7 +103,6 @@ const DrawerContentPrimitive = ({ children, ...props }: DrawerOverlayPrimitivePr
         className={twJoin([
           "fixed top-0 left-0 isolate z-50 h-(--visual-viewport-height) w-full touch-none will-change-transform",
           "flex items-end [--visual-viewport-vertical-padding:100px]",
-          "print:hidden", // modified from original
         ])}
         style={{
           backgroundColor: bg as any,
