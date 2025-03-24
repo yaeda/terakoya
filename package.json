@@ -19,10 +19,13 @@
     "motion": "^12.5.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
-    "react-aria-components": "^1.6.0",
+    "react-aria": "^3.38.1",
+    "react-aria-components": "^1.7.1",
     "react-dom": "^19.0.0",
     "react-scan": "^0.2.11",
-    "tailwindcss": "^4.0.9"
+    "react-stately": "^3.36.1",
+    "tailwindcss": "^4.0.9",
+    "tw-animate-css": "^1.2.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
