@@ -1,7 +1,11 @@
-import { dataSourceUrlAtom, readWriteAtom } from "@/atoms/options";
+import {
+  dataSourceUrlAtom,
+  readWriteAtom,
+  selectedIndexAtom,
+} from "@/atoms/options";
 import { extractSheetId, fetchSpreadsheet } from "@/atoms/q-a-data";
-import { useQuery } from "@tanstack/react-query";
-import { useAtom } from "jotai";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 export const useQueryQAData = () => {
@@ -9,7 +13,7 @@ export const useQueryQAData = () => {
 
   const sheetId = useMemo(() => extractSheetId(dataSourceUrl), [dataSourceUrl]);
 
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["q-a-data", sheetId],
     queryFn: async () => {
       return await fetchSpreadsheet(sheetId);
@@ -20,10 +24,13 @@ export const useQueryQAData = () => {
 
 export const useQuerySelectedQAData = () => {
   const queryResult = useQueryQAData();
+  const selectedIndex = useAtomValue(selectedIndexAtom);
 
-  // TODO: data selection
+  const selectedData = selectedIndex.map((index) => {
+    return queryResult.data[index];
+  });
 
-  return queryResult;
+  return { ...queryResult, data: selectedData };
 };
 
 export const useQuerySelectedAnswers = () => {
@@ -43,4 +50,14 @@ export const useQuerySelectedAnswers = () => {
     }, []);
     return record.answer ? [record.answer, ...answers] : answers;
   });
+};
+
+export const useQueryQADataCategories = () => {
+  const queryResponse = useQueryQAData();
+
+  const categories = queryResponse.data
+    ? Array.from(new Set(queryResponse.data.map((record) => record.category)))
+    : [];
+
+  return { ...queryResponse, categories };
 };

@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import { FC, useEffect, useRef } from "react";
-import { ClassNameValue } from "tailwind-merge";
+import type { FC } from "react";
+import { Suspense, useEffect, useRef } from "react";
+import type { ClassNameValue } from "tailwind-merge";
 import { Worksheet } from "./worksheet/worksheet";
 
 type PreviewProps = {
@@ -42,7 +43,9 @@ export const Preview: FC<PreviewProps> = ({ className }) => {
       className={clsx("flex size-full items-center justify-center", className)}
     >
       <div className="size-fit scale-[var(--preview-scale)] shadow-2xl [--preview-scale:1]">
-        <Worksheet />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Worksheet />
+        </Suspense>
       </div>
     </div>
   );

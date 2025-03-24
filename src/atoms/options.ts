@@ -1,20 +1,21 @@
+import { DEFAULT_DATA_SOURCE_URL } from "@/libs/constants";
 import { atomWithStorage } from "jotai/utils";
-import { Key } from "react-aria-components";
+import type { Key } from "react-aria-components";
 
-const serialize = <T>(value: Set<T>): string => {
-  return JSON.stringify([...value]);
+const serialize = <T>(value: T[]): string => {
+  return JSON.stringify(value);
 };
 
-const deserialize = <T>(serialized: string): Set<T> => {
-  return new Set(JSON.parse(serialized));
+const deserialize = <T>(serialized: string): T[] => {
+  return JSON.parse(serialized);
 };
 
-const localStorageForSet = {
-  getItem: <T>(key: string, initialValue: Set<T>): Set<T> => {
+const localStorageForArray = {
+  getItem: <T>(key: string, initialValue: T[]): T[] => {
     const item = localStorage.getItem(key);
     return item ? deserialize<T>(item) : initialValue;
   },
-  setItem: <T>(key: string, newValue: Set<T>): void => {
+  setItem: <T>(key: string, newValue: T[]): void => {
     localStorage.setItem(key, serialize<T>(newValue));
   },
   removeItem: (key: string) => {
@@ -24,9 +25,23 @@ const localStorageForSet = {
 
 export const dataSourceUrlAtom = atomWithStorage<string>(
   "terakoya:data-source-url",
-  "https://docs.google.com/spreadsheets/d/14Rf2nMpmzsyoycHDgaaQ0l9pSsGInI9v9x4L-AD5prU/edit?usp=sharing",
+  DEFAULT_DATA_SOURCE_URL,
   undefined,
   { getOnInit: true },
+);
+
+export const lastResultStatusAtom = atomWithStorage<Key[]>(
+  "terakoya:last-result-status",
+  ["less", "none", "one", "all"],
+  localStorageForArray,
+  { getOnInit: true },
+);
+
+export const selectedIndexAtom = atomWithStorage<number[]>(
+  "terakoya:selected-index",
+  [],
+  localStorageForArray,
+  { getOnInit: false },
 );
 
 export const titleAtom = atomWithStorage<string>(
@@ -36,10 +51,10 @@ export const titleAtom = atomWithStorage<string>(
   { getOnInit: true },
 );
 
-export const answerTypeAtom = atomWithStorage<Set<Key>>(
+export const answerTypeAtom = atomWithStorage<Key[]>(
   "terakoya:answer-type",
-  new Set(["none"]),
-  localStorageForSet,
+  ["none"],
+  localStorageForArray,
   { getOnInit: false },
 );
 

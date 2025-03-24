@@ -8,18 +8,18 @@ function App() {
   return (
     <main className="h-full">
       <div className="grid h-full grid-cols-3 grid-rows-1 overflow-hidden print:hidden">
-        <div className="col-span-3 row-span-1 grid size-full grid-cols-1 grid-rows-12 overflow-hidden md:col-span-2">
+        <div className="col-span-3 row-span-1 grid size-full grid-cols-1 grid-rows-15 overflow-hidden md:col-span-2">
           <Heading
             level={1}
             tracking="widest"
-            className="row-span-1 flex items-center justify-center py-4 md:hidden"
+            className="row-span-1 flex items-center justify-center pt-4 md:hidden"
           >
             TERAKOYA
           </Heading>
-          <Preview className="row-span-11 -my-4 md:row-span-12 md:my-0" />
+          <Preview className="row-span-14 md:row-span-15 md:my-0" />
         </div>
-        <div className="hidden p-4 md:col-span-1 md:block">
-          <Heading level={1} tracking="widest" className="py-4 text-center">
+        <div className="hidden overflow-y-scroll p-4 md:col-span-1 md:block">
+          <Heading level={1} tracking="widest" className="pb-4 text-center">
             TERAKOYA
           </Heading>
           <Options intent="cards" />
@@ -38,6 +38,7 @@ function App() {
             <Drawer.Trigger
               className={buttonStyles({
                 shape: "circle",
+                size: "square-petite",
                 intent: "primary",
                 class: "fixed right-4 bottom-4",
               })}

@@ -16,7 +16,10 @@ import {
   IconQrCode,
   IconUndo,
 } from "justd-icons";
-import { FC, ReactNode, useState } from "react";
+import type { FC, ReactNode } from "react";
+import { Suspense, useState } from "react";
+import { DataSelectionOptions } from "./options/data-selection";
+import type { SwitchProps } from "./ui";
 import {
   Button,
   Card,
@@ -25,7 +28,6 @@ import {
   Label,
   Link,
   Switch,
-  SwitchProps,
   Tabs,
   TextField,
   Toggle,
@@ -55,11 +57,13 @@ const AnswerTypeSelector = () => {
   const [answerType, setAnswerType] = useAtom(answerTypeAtom);
   return (
     <div className="flex flex-col gap-y-1">
-      <Label>答えの表示タイプ</Label>
+      <Label>表示タイプ</Label>
       <ToggleGroup
         selectedKeys={answerType}
         selectionMode="single"
-        onSelectionChange={setAnswerType}
+        onSelectionChange={(keys) => {
+          setAnswerType([...keys]);
+        }}
         disallowEmptySelection
       >
         <Toggle id="none">
@@ -90,7 +94,7 @@ const ReadWriteSelector = () => {
   const [readWrite, setReadWrite] = useAtom(readWriteAtom);
   return (
     <div className="flex flex-col gap-y-1">
-      <Label>答えの表示タイプ</Label>
+      <Label>読み書き選択</Label>
       <ToggleGroup
         selectedKeys={new Set([readWrite])}
         selectionMode="single"
@@ -153,7 +157,7 @@ const DataOptions = () => {
   );
 };
 
-const SwitchWithAtom: FC<
+const SwitchWithBooleanAtom: FC<
   SwitchProps & {
     children: ReactNode;
   } & {
@@ -168,24 +172,31 @@ const SwitchWithAtom: FC<
   );
 };
 
+const AnswerOptions = () => {
+  return (
+    <div className="flex flex-col gap-y-8">
+      <AnswerTypeSelector />
+      <ReadWriteSelector />
+    </div>
+  );
+};
+
 const OtherOptions = () => {
   return (
     <div className="flex flex-col gap-y-8">
       <TitleInput />
-      <AnswerTypeSelector />
-      <ReadWriteSelector />
       <div className="flex flex-col gap-y-1">
         <Label>記入欄</Label>
         <div className="flex flex-row gap-x-6">
-          <SwitchWithAtom booleanAtom={dateBoxVisibilityAtom}>
+          <SwitchWithBooleanAtom booleanAtom={dateBoxVisibilityAtom}>
             日付
-          </SwitchWithAtom>
-          <SwitchWithAtom booleanAtom={nameBoxVisibilityAtom}>
+          </SwitchWithBooleanAtom>
+          <SwitchWithBooleanAtom booleanAtom={nameBoxVisibilityAtom}>
             名前
-          </SwitchWithAtom>
-          <SwitchWithAtom booleanAtom={scoreBoxVisibilityAtom}>
+          </SwitchWithBooleanAtom>
+          <SwitchWithBooleanAtom booleanAtom={scoreBoxVisibilityAtom}>
             点数
-          </SwitchWithAtom>
+          </SwitchWithBooleanAtom>
         </div>
       </div>
     </div>
@@ -194,7 +205,12 @@ const OtherOptions = () => {
 
 const OPTIONS = [
   { id: "data-options", title: "問題データ", component: DataOptions },
-  // { id: "data-selection-options", title: "出題設定", component: DataOptions },
+  {
+    id: "data-selection-options",
+    title: "出題設定",
+    component: DataSelectionOptions,
+  },
+  { id: "answer-options", title: "答えの設定", component: AnswerOptions },
   { id: "other-options", title: "その他の設定", component: OtherOptions },
 ];
 
@@ -213,7 +229,9 @@ export const Options: FC<OptionsProps> = ({ intent } = { intent: "cards" }) => {
                 <Card.Title>{option.title}</Card.Title>
               </Card.Header>
               <Card.Content>
-                <option.component />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <option.component />
+                </Suspense>
               </Card.Content>
             </Card>
           );

@@ -198,6 +198,7 @@
     height: 100%;
     background-color: var(--color-slate-100);
     color: var(--fg);
+    overflow-y: hidden;
   }
 
   ::-webkit-scrollbar {

@@ -1,12 +1,12 @@
 import { answerTypeAtom, readWriteAtom } from "@/atoms/options";
 import { NUMBER_SIGN_LIST } from "@/libs/constants";
 import { hira2kata } from "@/libs/japanese";
-import { useQueryQAData } from "@/libs/q-a-data-queries";
-import { Token } from "@/libs/text-parser";
+import { useQuerySelectedQAData } from "@/libs/q-a-data-queries";
+import type { Token } from "@/libs/text-parser";
 import clsx from "clsx";
 import { useAtom } from "jotai";
-import { CSSProperties, FC } from "react";
-import { ClassNameValue } from "tailwind-merge";
+import type { CSSProperties, FC } from "react";
+import type { ClassNameValue } from "tailwind-merge";
 import { Answer, AnswerQR } from "./worksheet-answer";
 import { MetaBox } from "./worksheet-meta";
 import { Title } from "./worksheet-title";
@@ -20,7 +20,7 @@ const ORDER_ALIGNMENT = [
 const BackSide = () => {
   const [answerType] = useAtom(answerTypeAtom);
 
-  if (!answerType.has("back")) {
+  if (!answerType.includes("back")) {
     return null;
   }
 
@@ -88,35 +88,44 @@ const TText: FC<TTextProps> = ({ className, text }) => {
   );
 };
 
+const padArray = <T,>(array: T[], length: number, fillValue: T): T[] => {
+  return Object.assign(new Array(length).fill(fillValue), array);
+};
+
 export const Worksheet = () => {
-  console.log("[render] Worksheet");
+  const { data } = useQuerySelectedQAData();
 
-  const { data } = useQueryQAData();
-
-  // if (isLoading || !data) {
-  //   return null;
-  // }
+  const questions = padArray(data, data.length > 10 ? 20 : 10, undefined);
 
   return (
     <>
-      <div className="flex aspect-210/297 h-[297mm] max-h-[297mm] w-[210mm] flex-col overflow-hidden bg-white p-4">
+      <div className="flex aspect-210/297 h-[297mm] max-h-[297mm] w-[210mm] flex-col overflow-hidden bg-white p-4 font-(family-name:--font-cursive) font-normal not-italic">
         {/* Q&A + Meta */}
         <div className="grid grow grid-cols-12 gap-2 overflow-hidden">
           {/* Q&A */}
           <div className="col-span-11 grid h-full gap-4 overflow-hidden">
-            <ol className="row-span-1 grid grid-cols-10 gap-y-4 overflow-hidden border-black">
-              {data?.slice(0, 20).map((item, index) => (
+            <ol className="row-span-1 grid grid-cols-10 grid-rows-2 gap-y-4 overflow-hidden border-black">
+              {questions.map((item, index) => (
                 <li
                   key={index}
-                  className="order-[var(--order)] col-span-1 grid grid-cols-3 overflow-hidden border-x-2 border-l-2 border-black [writing-mode:vertical-rl] nth-[10n+1]:border-r-2"
+                  className={clsx(
+                    "order-[var(--order)] col-span-1 grid grid-cols-3 overflow-hidden border-x-2 border-l-2 border-black [writing-mode:vertical-rl] nth-[10n+1]:border-r-2",
+                    questions.length === 20 ? "row-span-1" : "row-span-2",
+                  )}
                   style={{ "--order": ORDER_ALIGNMENT[index] } as CSSProperties}
                 >
-                  <div className="col-span-2 my-auto flex items-center gap-2 px-2">
-                    <span className="size-fit">{NUMBER_SIGN_LIST[index]}</span>
-                    <TText
-                      className="line-clamp-2 has-[ruby]:-mr-[5px]"
-                      text={item.question}
-                    />
+                  <div className="col-span-2 my-auto flex items-center">
+                    {item !== undefined && item.question !== undefined && (
+                      <>
+                        <span className="size-fit px-1">
+                          {NUMBER_SIGN_LIST[index]}
+                        </span>
+                        <TText
+                          className="line-clamp-2 p-1"
+                          text={item.question}
+                        />
+                      </>
+                    )}
                   </div>
                   <span className="col-span-1 border-t-2 border-black"></span>
                 </li>

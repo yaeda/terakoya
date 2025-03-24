@@ -3,7 +3,7 @@ import { NUMBER_SIGN_LIST } from "@/libs/constants";
 import { useQuerySelectedAnswers } from "@/libs/q-a-data-queries";
 import { useAtom } from "jotai";
 import { QRCodeSVG } from "qrcode.react";
-import { FC } from "react";
+import type { FC } from "react";
 import { tv } from "tailwind-variants";
 import { Popover } from "../ui";
 
@@ -35,12 +35,16 @@ export const Answer: FC<AnswerProps> = ({ backSide }) => {
 
   const answers = useQuerySelectedAnswers();
 
-  if (answerType.has("none") || answerType.has("code") || type === undefined) {
+  if (
+    answerType.includes("none") ||
+    answerType.includes("code") ||
+    type === undefined
+  ) {
     return null;
   }
 
   const overwrite =
-    !backSide && answerType.has("back") ? "text-transparent" : "";
+    !backSide && answerType.includes("back") ? "text-transparent" : "";
 
   const { area, list } = answerStyle({ type });
 
@@ -63,7 +67,7 @@ export const Answer: FC<AnswerProps> = ({ backSide }) => {
 export const AnswerQR = () => {
   const [answerType] = useAtom(answerTypeAtom);
   const answers = useQuerySelectedAnswers();
-  if (!answerType.has("code")) {
+  if (!answerType.includes("code")) {
     return null;
   }
 
