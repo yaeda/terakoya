@@ -7,7 +7,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./global.css";
 
-scan({ enabled: true });
+scan({ enabled: process.env.NODE_ENV === "development" });
 
 const queryClient = new QueryClient();
 
