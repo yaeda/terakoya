@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { useAtom } from "jotai";
 import type { CSSProperties, FC } from "react";
 import type { ClassNameValue } from "tailwind-merge";
-import { Answer, AnswerQR } from "./worksheet-answer";
+import { Answer } from "./worksheet-answer";
 import { MetaBox } from "./worksheet-meta";
 import { Title } from "./worksheet-title";
 
@@ -20,7 +20,7 @@ const ORDER_ALIGNMENT = [
 const BackSide = () => {
   const [answerType] = useAtom(answerTypeAtom);
 
-  if (!answerType.includes("back")) {
+  if (!answerType.includes("back") && !answerType.includes("code")) {
     return null;
   }
 
@@ -141,10 +141,7 @@ export const Worksheet = () => {
           {/* Meta */}
           <div className="col-span-1 flex flex-col place-items-center justify-between border-black">
             <Title />
-            <div>
-              <MetaBox />
-              <AnswerQR />
-            </div>
+            <MetaBox />
           </div>
         </div>
         {/* Answer */}
