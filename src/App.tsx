@@ -6,7 +6,7 @@ import { Worksheet } from "./components/worksheet/worksheet";
 
 function App() {
   return (
-    <main className="h-full">
+    <>
       <div className="grid h-full grid-cols-3 grid-rows-1 overflow-hidden print:hidden">
         <div className="col-span-3 row-span-1 grid size-full grid-cols-1 grid-rows-15 overflow-hidden md:col-span-2">
           <Heading
@@ -70,7 +70,7 @@ function App() {
       <div className="hidden print:block">
         <Worksheet />
       </div>
-    </main>
+    </>
   );
 }
 
