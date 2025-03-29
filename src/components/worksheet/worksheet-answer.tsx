@@ -14,7 +14,7 @@ const answerStyle = tv({
   },
   variants: {
     type: {
-      default: {
+      front: {
         area: "p-4",
       },
       back: {
@@ -31,22 +31,34 @@ type AnswerProps = {
 
 export const Answer: FC<AnswerProps> = ({ backSide }) => {
   const [answerType] = useAtom(answerTypeAtom);
-  const type = [...answerType].pop() as "back" | "default" | undefined;
+  const type = [...answerType].pop() as
+    | "none"
+    | "front"
+    | "back"
+    | "code"
+    | undefined;
 
+  switch (type) {
+    default:
+    case "none":
+      return null;
+    case "front":
+      return <AnswerList type={type} backSide={backSide} />;
+    case "back":
+      return <AnswerList type={type} backSide={backSide} />;
+    case "code":
+      return backSide ? <AnswerQR /> : null;
+  }
+};
+
+export const AnswerList: FC<AnswerProps & { type: "front" | "back" }> = ({
+  backSide,
+  type,
+}) => {
+  const { area, list } = answerStyle({ type });
   const answers = useQuerySelectedAnswers();
 
-  if (
-    answerType.includes("none") ||
-    answerType.includes("code") ||
-    type === undefined
-  ) {
-    return null;
-  }
-
-  const overwrite =
-    !backSide && answerType.includes("back") ? "text-transparent" : "";
-
-  const { area, list } = answerStyle({ type });
+  const overwrite = !backSide && type === "back" ? "text-transparent" : "";
 
   return (
     <div className={area()}>
@@ -65,11 +77,7 @@ export const Answer: FC<AnswerProps> = ({ backSide }) => {
 };
 
 export const AnswerQR = () => {
-  const [answerType] = useAtom(answerTypeAtom);
   const answers = useQuerySelectedAnswers();
-  if (!answerType.includes("code")) {
-    return null;
-  }
 
   const answerList = answers.map((answer, index) => {
     return `${NUMBER_SIGN_LIST[index]}${answer.join("/")}`;
@@ -80,7 +88,7 @@ export const AnswerQR = () => {
   return (
     <Popover>
       <Popover.Trigger aria-label="Open Popover">
-        <QRCodeSVG value={answerText} size={64} className="mt-2 -mb-2 w-full" />
+        <QRCodeSVG value={answerText} size={128} />
       </Popover.Trigger>
       <Popover.Content className="sm:max-w-72 print:hidden" placement="left">
         <Popover.Header>
