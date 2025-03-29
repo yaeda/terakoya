@@ -57,10 +57,10 @@ const ScoreBox = () => {
 
 export const MetaBox = () => {
   return (
-    <>
+    <div>
       <DateBox />
       <NameBox />
       <ScoreBox />
-    </>
+    </div>
   );
 };
