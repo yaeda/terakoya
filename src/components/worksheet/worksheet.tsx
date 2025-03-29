@@ -127,7 +127,13 @@ export const Worksheet = () => {
                       </>
                     )}
                   </div>
-                  <span className="col-span-1 border-t-2 border-black"></span>
+                  <span className="col-span-1 flex justify-end border-t-2 border-black">
+                    {item?.id && (
+                      <span className="text-muted-fg text-center text-xs [writing-mode:horizontal-tb]">
+                        ({item.id})
+                      </span>
+                    )}
+                  </span>
                 </li>
               ))}
             </ol>
