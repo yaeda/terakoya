@@ -38,7 +38,7 @@ const ANSWER_DESCRIPTION = {
   none: "答えは印刷されません。",
   front: "答えは問題の下に印刷されます。",
   back: "答えは別紙に印刷されます。両面印刷がおすすめです。",
-  code: "答えはQRコードとして印刷されます。",
+  code: "答えは別紙にQRコードとして印刷されます。両面印刷がおすすめです。",
 } as const;
 
 const TitleInput = () => {
