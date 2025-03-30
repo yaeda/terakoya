@@ -42,6 +42,9 @@ export const useQuerySelectedAnswers = () => {
   }
 
   return data.map((record) => {
+    if (record === undefined) {
+      return [];
+    }
     const answers = record.question.reduce<string[]>((prevAnswers, token) => {
       const blankAnswer = readWrite === "read" ? token.hint : token.text;
       return token.isBlank && blankAnswer
