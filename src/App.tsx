@@ -1,7 +1,8 @@
+import { Button } from "@heroui/react";
 import { IconAdjustment } from "justd-icons";
 import { Options } from "./components/options";
 import { Preview } from "./components/preview";
-import { Button, buttonStyles, Drawer, Heading } from "./components/ui";
+import { buttonStyles, Drawer, Heading } from "./components/ui";
 import { Worksheet } from "./components/worksheet/worksheet";
 
 function App() {
@@ -27,7 +28,7 @@ function App() {
             onPress={() => {
               print();
             }}
-            intent="primary"
+            color="primary"
             className="my-4 w-full"
           >
             印刷する
@@ -57,7 +58,7 @@ function App() {
                   onPress={() => {
                     print();
                   }}
-                  intent="primary"
+                  color="primary"
                   className="w-full"
                 >
                   印刷する
