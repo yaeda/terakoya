@@ -1,18 +1,24 @@
-import { lastResultStatusAtom, selectedIndexAtom } from "@/atoms/options";
+import {
+  lastResultStatusAtom,
+  selectedCategoriesAtom,
+  selectedIndexAtom,
+} from "@/atoms/options";
 import type { QAData } from "@/atoms/q-a-data";
-import type { SelectedKey } from "@/components/ui";
+import { Description, Label } from "@/components/ui";
+import { useQueryQADataCategories } from "@/libs/q-a-data-queries";
+import type { CheckboxProps, SharedSelection } from "@heroui/react";
 import {
   Button,
-  Description,
-  Label,
-  MultipleSelect,
-  Toggle,
-  ToggleGroup,
-} from "@/components/ui";
-import { useQueryQADataCategories } from "@/libs/q-a-data-queries";
-import { useAtom, useSetAtom } from "jotai";
-import type { FC } from "react";
-import { useListData } from "react-stately";
+  Checkbox,
+  CheckboxGroup,
+  Chip,
+  Select,
+  SelectItem,
+  useCheckbox,
+} from "@heroui/react";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { IconBullet, IconX } from "justd-icons";
+import { type FC } from "react";
 
 // Function to select random data from the candidate data
 const selectRandomData = (data: QAData[]): QAData[] => {
@@ -27,79 +33,173 @@ const selectRandomData = (data: QAData[]): QAData[] => {
   return selectedData;
 };
 
-export const DataSelectionOptions: FC = () => {
-  const { categories, data } = useQueryQADataCategories();
+const CategorySelection = () => {
+  const { categories } = useQueryQADataCategories();
+
+  const selectionItems = categories.map((category) => ({ key: category }));
+
+  const [selectedCategories, setSelectedCategories] = useAtom(
+    selectedCategoriesAtom,
+  );
+
+  const onSelectionChange = (keys: SharedSelection) => {
+    setSelectedCategories([...keys] as string[]);
+  };
+
+  return (
+    <div className="flex flex-col gap-y-1">
+      <Label>カテゴリ</Label>
+      <Select
+        classNames={{
+          trigger: "min-h-12 py-2",
+        }}
+        isMultiline
+        selectionMode="multiple"
+        isDisabled={categories.length === 0}
+        selectedKeys={selectedCategories || "all"}
+        onSelectionChange={onSelectionChange}
+        aria-label="カテゴリ"
+        variant="flat"
+        items={selectionItems}
+        renderValue={(items) => {
+          return (
+            <div className="flex flex-wrap gap-2">
+              {items.map((item) => (
+                <Chip key={item.key} size="sm" variant="flat">
+                  {item.key}
+                </Chip>
+              ))}
+            </div>
+          );
+        }}
+      >
+        {(category) => {
+          return <SelectItem key={category.key}>{category.key}</SelectItem>;
+        }}
+      </Select>
+    </div>
+  );
+};
+
+const CheckboxWithSymbols: FC<CheckboxProps & { symbols: string[] }> = ({
+  symbols,
+  ...props
+}) => {
+  const { isSelected } = useCheckbox(props);
+
+  return (
+    <Checkbox
+      {...props}
+      classNames={{
+        label: "flex flex-row justify-between w-full",
+        base: "w-full max-w-full",
+      }}
+    >
+      <div className="flex w-full justify-between">
+        <span>{props.children}</span>
+        {symbols && (
+          <div className="flex flex-row gap-x-0.5">
+            {symbols.map((symbol) => {
+              return (
+                <Chip
+                  key={symbol}
+                  classNames={{
+                    content: "flex flex-row",
+                    base: "p-0",
+                  }}
+                  size="sm"
+                  variant="flat"
+                  color={isSelected ? "primary" : "default"}
+                >
+                  {[...symbol].map((s, index) => {
+                    switch (s) {
+                      case "o":
+                        return <IconBullet key={index} />;
+                      case "x":
+                        return <IconX key={index} />;
+                      case "-":
+                        return "無";
+                      default:
+                        return null;
+                    }
+                  })}
+                </Chip>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </Checkbox>
+  );
+};
+
+const LatestResultSelection = () => {
   const [lastResultStatus, setLastResultStatus] = useAtom(lastResultStatusAtom);
+
+  return (
+    <div className="flex flex-col gap-y-1">
+      <Label>直近2回の結果</Label>
+      <CheckboxGroup
+        value={lastResultStatus}
+        onValueChange={setLastResultStatus}
+        // label="直近2回の結果"
+      >
+        <CheckboxWithSymbols value="less" symbols={["-", "o", "x"]}>
+          回数不足
+        </CheckboxWithSymbols>
+        <CheckboxWithSymbols value="none" symbols={["xx"]}>
+          正解なし
+        </CheckboxWithSymbols>
+        <CheckboxWithSymbols value="one" symbols={["ox", "xo"]}>
+          1回正解
+        </CheckboxWithSymbols>
+        <CheckboxWithSymbols value="all" symbols={["oo"]}>
+          全部正解
+        </CheckboxWithSymbols>
+      </CheckboxGroup>
+    </div>
+  );
+};
+
+const DataSelectionButton = () => {
+  const { categories, data } = useQueryQADataCategories();
+  const selectedCategories = useAtomValue(selectedCategoriesAtom);
+  const lastResultStatus = useAtomValue(lastResultStatusAtom);
   const setSelectedIndex = useSetAtom(selectedIndexAtom);
 
-  const items = categories.map((category) => ({
-    id: category,
-    name: category,
-  }));
-
-  const selectedItems = useListData<SelectedKey>({
-    initialItems: items,
-  });
-
-  const selectedCategories = selectedItems.items.map((item) => item.id);
   const candidateData = data.filter((item) => {
     return (
-      selectedCategories.includes(item.category) &&
+      (!selectedCategories ||
+        categories.length === 0 ||
+        selectedCategories.includes(item.category)) &&
       lastResultStatus.includes(item.lastTwoResultStatus)
     );
   });
 
   return (
-    <div className="flex flex-col gap-y-8">
-      <MultipleSelect
-        className="min-w-0"
-        label="カテゴリ"
-        intent="secondary"
-        shape="circle"
-        items={items}
-        tag={(item) => (
-          <MultipleSelect.Tag textValue={item.id as string}>
-            {item.name}
-          </MultipleSelect.Tag>
-        )}
-        selectedItems={selectedItems}
-      >
-        {(item) => {
-          return (
-            <MultipleSelect.Option textValue={item.id as string}>
-              {item.name}
-            </MultipleSelect.Option>
-          );
+    <div className="flex flex-col gap-y-1">
+      <Button
+        variant="ghost"
+        color="primary"
+        isDisabled={!candidateData.length}
+        onPress={() => {
+          const selectedData = selectRandomData(candidateData);
+          setSelectedIndex(selectedData.map((data) => data.index));
         }}
-      </MultipleSelect>
-      <div className="flex flex-col gap-y-1">
-        <Label>直近2回の結果</Label>
-        <ToggleGroup
-          selectionMode="multiple"
-          disallowEmptySelection
-          selectedKeys={lastResultStatus}
-          onSelectionChange={(keys) => {
-            setLastResultStatus([...keys]);
-          }}
-        >
-          <Toggle id="less">回数不足</Toggle>
-          <Toggle id="none">正解なし</Toggle>
-          <Toggle id="one">1回正解</Toggle>
-          <Toggle id="all">全部正解</Toggle>
-        </ToggleGroup>
-      </div>
-      <div className="flex flex-col gap-y-1">
-        <Button
-          isDisabled={!candidateData.length}
-          onPress={() => {
-            const selectedData = selectRandomData(candidateData);
-            setSelectedIndex(selectedData.map((data) => data.index));
-          }}
-        >
-          {candidateData.length} 件から出題
-        </Button>
-        <Description>押すたびにランダムに出題されます。</Description>
-      </div>
+      >
+        {candidateData.length} 件から出題
+      </Button>
+      <Description>押すたびにランダムに出題されます。</Description>
+    </div>
+  );
+};
+
+export const DataSelectionOptions: FC = () => {
+  return (
+    <div className="flex flex-col gap-y-8">
+      <CategorySelection />
+      <LatestResultSelection />
+      <DataSelectionButton />
     </div>
   );
 };

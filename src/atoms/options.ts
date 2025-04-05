@@ -2,20 +2,20 @@ import { DEFAULT_DATA_SOURCE_URL } from "@/libs/constants";
 import { atomWithStorage } from "jotai/utils";
 import type { Key } from "react-aria-components";
 
-const serialize = <T>(value: T[]): string => {
+const serialize = <T>(value: T | undefined): string => {
   return JSON.stringify(value);
 };
 
-const deserialize = <T>(serialized: string): T[] => {
+const deserialize = <T>(serialized: string): T => {
   return JSON.parse(serialized);
 };
 
-const localStorageForArray = {
-  getItem: <T>(key: string, initialValue: T[]): T[] => {
+const localStorageWithJsonObject = {
+  getItem: <T>(key: string, initialValue: T): T => {
     const item = localStorage.getItem(key);
     return item ? deserialize<T>(item) : initialValue;
   },
-  setItem: <T>(key: string, newValue: T[]): void => {
+  setItem: <T>(key: string, newValue: T): void => {
     localStorage.setItem(key, serialize<T>(newValue));
   },
   removeItem: (key: string) => {
@@ -30,17 +30,24 @@ export const dataSourceUrlAtom = atomWithStorage<string>(
   { getOnInit: true },
 );
 
-export const lastResultStatusAtom = atomWithStorage<Key[]>(
+export const selectedCategoriesAtom = atomWithStorage<string[] | undefined>(
+  "terakoya:selected-categories",
+  undefined,
+  localStorageWithJsonObject,
+  { getOnInit: true },
+);
+
+export const lastResultStatusAtom = atomWithStorage<string[]>(
   "terakoya:last-result-status",
   ["less", "none", "one", "all"],
-  localStorageForArray,
+  localStorageWithJsonObject,
   { getOnInit: true },
 );
 
 export const selectedIndexAtom = atomWithStorage<number[]>(
   "terakoya:selected-index",
   [],
-  localStorageForArray,
+  localStorageWithJsonObject,
   { getOnInit: false },
 );
 
@@ -54,7 +61,7 @@ export const titleAtom = atomWithStorage<string>(
 export const answerTypeAtom = atomWithStorage<Key[]>(
   "terakoya:answer-type",
   ["none"],
-  localStorageForArray,
+  localStorageWithJsonObject,
   { getOnInit: false },
 );
 
