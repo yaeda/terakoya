@@ -1,8 +1,8 @@
 import { Button } from "@heroui/react";
-import { IconAdjustment } from "justd-icons";
 import { Options } from "./components/options";
+import { OptionsDrawer } from "./components/options/options-drawer";
 import { Preview } from "./components/preview";
-import { buttonStyles, Drawer, Heading } from "./components/ui";
+import { Heading } from "./components/ui";
 import { Worksheet } from "./components/worksheet/worksheet";
 
 function App() {
@@ -35,37 +35,7 @@ function App() {
           </Button>
         </div>
         <div className="md:hidden">
-          <Drawer withNotch={false}>
-            <Drawer.Trigger
-              className={buttonStyles({
-                shape: "circle",
-                size: "square-petite",
-                intent: "primary",
-                class: "fixed right-4 bottom-4",
-              })}
-            >
-              <IconAdjustment />
-            </Drawer.Trigger>
-            <Drawer.Content>
-              <Drawer.Header>
-                <Drawer.Title>各種設定</Drawer.Title>
-              </Drawer.Header>
-              <Drawer.Body>
-                <Options intent="tabs" />
-              </Drawer.Body>
-              <Drawer.Footer>
-                <Button
-                  onPress={() => {
-                    print();
-                  }}
-                  color="primary"
-                  className="w-full"
-                >
-                  印刷する
-                </Button>
-              </Drawer.Footer>
-            </Drawer.Content>
-          </Drawer>
+          <OptionsDrawer />
         </div>
       </div>
       <div className="hidden print:block">
