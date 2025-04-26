@@ -7,6 +7,8 @@ import {
   scoreBoxVisibilityAtom,
   titleAtom,
 } from "@/atoms/options";
+import type { SwitchProps } from "@heroui/react";
+import { Button, Switch, Tab, Tabs } from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtom, type SetStateAction, type WritableAtom } from "jotai";
 import {
@@ -19,16 +21,12 @@ import {
 import type { FC, ReactNode } from "react";
 import { Suspense, useState } from "react";
 import { DataSelectionOptions } from "./options/data-selection";
-import type { SwitchProps } from "./ui";
 import {
-  Button,
   Card,
   Description,
   Form,
   Label,
   Link,
-  Switch,
-  Tabs,
   TextField,
   Toggle,
   ToggleGroup,
@@ -131,7 +129,7 @@ const DataOptions = () => {
           value={dataSourceUrlLocal}
           label="スプレッドシートのURL"
           suffix={
-            <Button type="submit" aria-label="New user" intent="outline">
+            <Button type="submit" aria-label="New user" variant="bordered">
               読み込む
             </Button>
           }
@@ -166,7 +164,7 @@ const SwitchWithBooleanAtom: FC<
 > = ({ children, booleanAtom }) => {
   const [value, setValue] = useAtom(booleanAtom);
   return (
-    <Switch isSelected={value} onChange={setValue}>
+    <Switch isSelected={value} onValueChange={setValue} size="sm">
       {children}
     </Switch>
   );
@@ -243,21 +241,22 @@ export const Options: FC<OptionsProps> = ({ intent } = { intent: "cards" }) => {
   if (intent === "tabs") {
     return (
       <div>
-        <Tabs aria-label="options">
-          <Tabs.List>
-            {OPTIONS.map((option) => {
-              return (
-                <Tabs.Tab key={`tab-${option.id}`} id={option.id}>
-                  {option.title}
-                </Tabs.Tab>
-              );
-            })}
-          </Tabs.List>
+        <Tabs
+          aria-label="options"
+          variant="underlined"
+          classNames={{
+            base: "sticky top-0 z-10 bg-white/90",
+            tab: "px-0 w-fit",
+            tabList: "px-0 gap-x-4",
+            cursor: "w-full",
+          }}
+          fullWidth
+        >
           {OPTIONS.map((option) => {
             return (
-              <Tabs.Panel key={`panel-${option.id}`} id={option.id}>
+              <Tab key={`tab-${option.id}`} title={option.title}>
                 <option.component />
-              </Tabs.Panel>
+              </Tab>
             );
           })}
         </Tabs>
