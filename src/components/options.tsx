@@ -11,33 +11,11 @@ import type { SwitchProps } from "@heroui/react";
 import { Button, Switch, Tab, Tabs } from "@heroui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtom, type SetStateAction, type WritableAtom } from "jotai";
-import {
-  IconArrowUpRight,
-  IconCirclePlaceholderDashed,
-  IconLayoutAlignBottom,
-  IconQrCode,
-  IconUndo,
-} from "justd-icons";
+import { IconArrowUpRight } from "justd-icons";
 import type { FC, ReactNode } from "react";
 import { Suspense, useState } from "react";
 import { DataSelectionOptions } from "./options/data-selection";
-import {
-  Card,
-  Description,
-  Form,
-  Label,
-  Link,
-  TextField,
-  Toggle,
-  ToggleGroup,
-} from "./ui";
-
-const ANSWER_DESCRIPTION = {
-  none: "答えは印刷されません。",
-  front: "答えは問題の下に印刷されます。",
-  back: "答えは別紙に印刷されます。両面印刷がおすすめです。",
-  code: "答えは別紙にQRコードとして印刷されます。両面印刷がおすすめです。",
-} as const;
+import { Card, Description, Form, Label, Link, TextField } from "./ui";
 
 const TitleInput = () => {
   const [title, setTitle] = useAtom(titleAtom);
@@ -51,61 +29,72 @@ const TitleInput = () => {
   );
 };
 
+const ANSWER_TYPE = [
+  { id: "none", label: "なし", content: "答えは印刷されません。" },
+  { id: "front", label: "下", content: "答えは問題の下に印刷されます。" },
+  {
+    id: "back",
+    label: "裏",
+    content: "答えは別紙に印刷されます。両面印刷がおすすめです。",
+  },
+  {
+    id: "code",
+    label: "二次元コード",
+    content:
+      "答えは別紙に二次元コードとして印刷されます。両面印刷がおすすめです。",
+  },
+];
+
 const AnswerTypeSelector = () => {
   const [answerType, setAnswerType] = useAtom(answerTypeAtom);
   return (
     <div className="flex flex-col gap-y-1">
       <Label>表示タイプ</Label>
-      <ToggleGroup
-        selectedKeys={answerType}
-        selectionMode="single"
-        onSelectionChange={(keys) => {
-          setAnswerType([...keys]);
+      <Tabs
+        aria-label="options"
+        variant="solid"
+        items={ANSWER_TYPE}
+        selectedKey={answerType[0] ?? "none"}
+        onSelectionChange={(key) => {
+          setAnswerType([key]);
         }}
-        disallowEmptySelection
+        classNames={{
+          panel: "p-0",
+        }}
       >
-        <Toggle id="none">
-          <IconCirclePlaceholderDashed /> なし
-        </Toggle>
-        <Toggle id="front">
-          <IconLayoutAlignBottom /> 表
-        </Toggle>
-        <Toggle id="back">
-          <IconUndo /> 裏
-        </Toggle>
-        <Toggle id="code">
-          <IconQrCode /> 二次元コード
-        </Toggle>
-      </ToggleGroup>
-      <Description>
-        {[...answerType].map((key) => {
-          const description =
-            ANSWER_DESCRIPTION[key as keyof typeof ANSWER_DESCRIPTION];
-          return description ?? "";
+        {ANSWER_TYPE.map((type) => {
+          return (
+            <Tab key={type.id} title={type.label}>
+              <Description>{type.content}</Description>
+            </Tab>
+          );
         })}
-      </Description>
+      </Tabs>
     </div>
   );
 };
+
+const READ_WRITE_TYPE = [
+  { id: "read", label: "読み" },
+  { id: "write", label: "書き" },
+];
 
 const ReadWriteSelector = () => {
   const [readWrite, setReadWrite] = useAtom(readWriteAtom);
   return (
     <div className="flex flex-col gap-y-1">
       <Label>読み書き選択</Label>
-      <ToggleGroup
-        selectedKeys={new Set([readWrite])}
-        selectionMode="single"
-        onSelectionChange={(keys) => {
-          if (keys.size) {
-            setReadWrite([...keys][0]);
-          }
-        }}
-        disallowEmptySelection
+      <Tabs
+        aria-label="options"
+        variant="solid"
+        items={READ_WRITE_TYPE}
+        selectedKey={readWrite}
+        onSelectionChange={setReadWrite}
       >
-        <Toggle id="read">読み</Toggle>
-        <Toggle id="write">書き</Toggle>
-      </ToggleGroup>
+        {READ_WRITE_TYPE.map((type) => {
+          return <Tab key={type.id} title={type.label} />;
+        })}
+      </Tabs>
     </div>
   );
 };
