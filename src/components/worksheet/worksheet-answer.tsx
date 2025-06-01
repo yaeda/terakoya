@@ -5,7 +5,6 @@ import { useAtom } from "jotai";
 import { QRCodeSVG } from "qrcode.react";
 import type { FC } from "react";
 import { tv } from "tailwind-variants";
-import { Popover } from "../ui";
 
 const answerStyle = tv({
   slots: {
@@ -86,21 +85,21 @@ export const AnswerQR = () => {
   const answerText = answerList ? answerList.join("\n") : "no data";
 
   return (
-    <Popover>
-      <Popover.Trigger aria-label="Open Popover">
-        <QRCodeSVG value={answerText} size={128} />
-      </Popover.Trigger>
-      <Popover.Content className="sm:max-w-72 print:hidden" placement="left">
-        <Popover.Header>
-          <Popover.Description>
-            <ol>
-              {answerList?.map((answer, index) => {
-                return <li key={`answer-${index}`}>{answer}</li>;
-              })}
-            </ol>
-          </Popover.Description>
-        </Popover.Header>
-      </Popover.Content>
-    </Popover>
+    // <Popover>
+    //   <Popover.Trigger aria-label="Open Popover">
+    <QRCodeSVG value={answerText} size={128} />
+    //   </Popover.Trigger>
+    //   <Popover.Content className="sm:max-w-72 print:hidden" placement="left">
+    //     <Popover.Header>
+    //       <Popover.Description>
+    //         <ol>
+    //           {answerList?.map((answer, index) => {
+    //             return <li key={`answer-${index}`}>{answer}</li>;
+    //           })}
+    //         </ol>
+    //       </Popover.Description>
+    //     </Popover.Header>
+    //   </Popover.Content>
+    // </Popover>
   );
 };
