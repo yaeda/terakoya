@@ -39,7 +39,7 @@ export const selectedCategoriesAtom = atomWithStorage<string[] | undefined>(
 
 export const lastResultStatusAtom = atomWithStorage<string[]>(
   "terakoya:last-result-status",
-  ["less", "none", "one", "all"],
+  ["zero", "less", "none", "one", "all"],
   localStorageWithJsonObject,
   { getOnInit: true },
 );

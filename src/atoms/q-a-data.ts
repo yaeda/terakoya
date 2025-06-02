@@ -10,12 +10,16 @@ export type QAData = {
   category: string;
   lastDate: Date;
   results: boolean[];
-  lastTwoResultStatus: "less" | "none" | "one" | "all";
+  lastTwoResultStatus: "zero" | "less" | "none" | "one" | "all";
 };
 
 const genResultStatus = (
   results: boolean[],
-): "less" | "none" | "one" | "all" => {
+): "zero" | "less" | "none" | "one" | "all" => {
+  if (results.length === 0) {
+    return "zero";
+  }
+
   if (results.length < 2) {
     return "less";
   }

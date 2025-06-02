@@ -144,7 +144,10 @@ const LatestResultSelection = () => {
         onValueChange={setLastResultStatus}
         // label="直近2回の結果"
       >
-        <CheckboxWithSymbols value="less" symbols={["-", "o", "x"]}>
+        <CheckboxWithSymbols value="zero" symbols={[]}>
+          未実施
+        </CheckboxWithSymbols>
+        <CheckboxWithSymbols value="less" symbols={["o", "x"]}>
           回数不足
         </CheckboxWithSymbols>
         <CheckboxWithSymbols value="none" symbols={["xx"]}>
